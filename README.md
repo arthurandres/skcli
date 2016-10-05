@@ -112,3 +112,30 @@ LGW=>BSL 1 2016-12-02 14:00:00 +0000 UTC 2016-12-02 16:35:00 +0000 UTC BSL=>LTN 
 ```
 
 I can then decide that base is the cheapest option for me, with a gets flight from gatwick at 72.98.
+
+## Installation
+
+- Skcli is writen in go. 
+- It uses the [Skyscanner](http://skycanner.net) [api](http://business.skyscanner.net/portal/en-GB/Documentation/ApiOverview). 
+- To use the API you'll need a key. 
+- Most of the code is in [sklib](https://github.com/arthurandres/sklib)
+- It requires a few dependencies that are trivial to install
+  - [bolt](https://github.com/boltdb/bolt) for caching results
+  - [testify](github.com/stretchr/testify/assert) for testing
+
+So quite simply:
+```
+go get github.com/arthurandres/skcli
+go get github.com/arthurandres/sklib
+go get github.com/boltdb/bolt
+go get github.com/stretchr/testify/assert 
+go install github.com/arthurandres/skcli
+```
+Then ```cd``` to where you want to run the app. Create a text file called ```key``` and just put your skyscanner API key value in there. 
+
+Run ```$GOPATH/bin/skcli -h``` and voila.
+
+
+
+
+
