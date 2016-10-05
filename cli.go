@@ -155,7 +155,7 @@ func DisplayItineraries(input sklib.Itineraries) {
 			itinerary.InboundLeg.Display(),
 			itinerary.GetPrice())
 	}
-	fmt.Println(len(input))
+	fmt.Println(len(input), "results")
 }
 
 func ParseTimeOfDay(input string) (time.Duration, error) {
