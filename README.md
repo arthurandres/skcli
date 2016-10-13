@@ -42,7 +42,7 @@ Usage of skcli:
     	selected destinations
 ```
 
-The first step is to search for all possible destinations. Say I want to fly out from london (LON) the first weekend of december, leaving on friday the 2nd and coming back on sunday the 4th, with direct flights only:
+The first step is to search for all possible destinations. Say you want to fly out from london (LON) the first weekend of december, leaving on friday the 2nd and coming back on sunday the 4th, with direct flights only:
 
 ```shell
 $skcli -out 20161202 -in 20161204 -from LON -direct
@@ -82,13 +82,13 @@ SZZ 28 Szczecin Goleniow https://www.skyscanner.net/transport/flights/LON/SZZ/20
 BSL 16 Basel Mulhouse Freiburg https://www.skyscanner.net/transport/flights/LON/BSL/20161202/20161204/
 158 results
 ```
-I can then from this list chose a subset of destination I want to explore. Say I'm considering  When doing so I can add additional filter. Actually I want to leave after 4pm and come back after 7pm.
+From this list you can then chose a subset of destination you want to explore. Say you are considering going to Basel or Cologne. At this point you can also add additional filter, for example you want to leave after 4pm and come back after 7pm.
 
 ```shell
 skcli -out 20161202 -in 20161204 -from LON -direct -to BSL,CGN -departAfter 1600 -returnAfter 1900
 ```
 
-This can take a little bit of time as specific queries take more time. After a while I can see all the matching flights sorted by price:
+This can take a little bit of time as specific queries take more time. After a while you can see all the matching flights sorted by price:
 
 ```shell
 LCY=>BSL 1 2016-12-02 19:15:00 +0000 UTC 2016-12-02 21:50:00 +0000 UTC BSL=>LGW 1 2016-12-04 21:10:00 +0000 UTC 2016-12-04 21:40:00 +0000 UTC 226.85
@@ -111,7 +111,7 @@ LGW=>BSL 1 2016-12-02 14:00:00 +0000 UTC 2016-12-02 16:35:00 +0000 UTC BSL=>LTN 
 17 results
 ```
 
-I can then decide that base is the cheapest option for me, with a gets flight from gatwick at 72.98.
+You can then decide that base is the cheapest option, with a  flight from gatwick at 72.98 leaving at convenient time.
 
 ## Installation
 
