@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/arthurandres/sklib"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/arthurandres/sklib"
 )
 
 var (
@@ -100,7 +101,7 @@ func DisplayFullQuotes(request sklib.BrowseRoutesRequest, quotes sklib.FullQuote
 
 	sort.Sort(sort.Reverse(quotes))
 	for _, v := range quotes {
-		link := sklib.GetLink(request.Origin, v.Destination.SkyscannerCode, request.DepartureDate, request.ReturnDate)
+		link := sklib.GetSearchLink(request.Origin, v.Destination.SkyscannerCode, request.DepartureDate, request.ReturnDate)
 		fmt.Printf("%s %.0f %s %s\n", v.Destination.SkyscannerCode, v.Quote.MinPrice, v.Destination.Name, link)
 	}
 	fmt.Printf("%d results\n", len(quotes))
@@ -108,17 +109,10 @@ func DisplayFullQuotes(request sklib.BrowseRoutesRequest, quotes sklib.FullQuote
 
 func main() {
 	arguments := ReadArguments()
-	engine := &sklib.LiveEngine{Key: arguments.Key}
-	db := sklib.CreateDB()
-	defer db.Close()
-	var cache sklib.CacheStore = sklib.CreateCache(db)
-	if arguments.NoCache {
-		cache = &sklib.WriteOnlyStore{Store: cache}
-	}
-	var ce sklib.RequestEngine = &sklib.CachedEngine{engine, cache}
-
+	ce, toClose := sklib.CreateEngine(arguments.Key, arguments.NoCache)
+	defer toClose()
 	if arguments.Delay {
-		ce = &sklib.SlowEngine{ce}
+		ce = &sklib.SlowEngine{Engine: ce}
 	}
 	if len(arguments.Destinations) == 0 {
 		browse(ce, arguments)
@@ -142,7 +136,7 @@ func browse(engine sklib.RequestEngine, arguments ApplicationParameters) {
 		panic(err)
 	}
 	if arguments.DirectOnly {
-		results = sklib.FilterDirects(results)
+		results = results.FilterDirects()
 	}
 	DisplayFullQuotes(arguments.ToBrowseRoutesRequest(), results)
 }
@@ -173,9 +167,11 @@ func ParseTimeOfDay(input string) (time.Duration, error) {
 
 func (m *ApplicationParameters) ToFilter() sklib.ItineraryFilter {
 	filters := make(sklib.CompositeFilter, 0)
-	filters = append(filters, &sklib.DirectFilter{m.DirectOnly})
-	filters = sklib.AppendTimeFilter(filters, m.DepartAfter, false, true)
-	filters = sklib.AppendTimeFilter(filters, m.ReturnAfter, false, false)
+	if m.DirectOnly {
+		filters = filters.AppendDirectOnly()
+	}
+	filters = filters.AppendTimeFilter(m.DepartAfter, false, true)
+	filters = filters.AppendTimeFilter(m.ReturnAfter, false, false)
 	return filters
 }
 
